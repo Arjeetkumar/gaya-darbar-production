@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Gaya Darbar Brand */
+  --gd-ivory: #F8F7F3;
+  --gd-white: #FFFFFF;
+  --gd-charcoal: #171A18;
+  --gd-forest: #1F6B4F;
+  --gd-forest-dark: #174F3B;
+  --gd-sage: #DCE8DF;
+  --gd-sand: #E9E2D5;
+  --gd-muted: #68716B;
+  --gd-border: #E4E6E1;
+
+  font-family: "DM Sans", sans-serif;
+  color: var(--gd-charcoal);
+  background: var(--gd-ivory);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--gd-ivory);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--gd-forest);
+  color: white;
+}
+
+/* ------------------------------
+   Typography
+-------------------------------- */
+
+.font-display {
+  font-family: "Playfair Display", serif;
+}
+
+/* ------------------------------
+   Premium Scrollbar
+-------------------------------- */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gd-ivory);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #B8C0BA;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gd-forest);
+}
+
+/* ------------------------------
+   Reveal Animations
+-------------------------------- */
+
+@keyframes gd-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gd-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gd-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes gd-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-gd-fade-up {
+  animation: gd-fade-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-gd-fade-in {
+  animation: gd-fade-in 0.5s ease both;
+}
+
+.animate-gd-scale-in {
+  animation: gd-scale-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-gd-float {
+  animation: gd-float 4s ease-in-out infinite;
+}
+
+/* ------------------------------
+   Premium Utility Classes
+-------------------------------- */
+
+.gd-container {
+  width: min(100% - 40px, 1280px);
+  margin-inline: auto;
+}
+
+.gd-section {
+  padding-block: 96px;
+}
+
+.gd-glass {
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+}
+
+.gd-shadow {
+  box-shadow:
+    0 20px 50px rgba(23, 26, 24, 0.07),
+    0 4px 14px rgba(23, 26, 24, 0.04);
+}
+
+.gd-shadow-hover {
+  transition:
+    transform 350ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 350ms ease;
+}
+
+.gd-shadow-hover:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 28px 60px rgba(23, 26, 24, 0.10),
+    0 8px 20px rgba(23, 26, 24, 0.05);
+}
+
+/* ------------------------------
+   Reduced Motion
+-------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ------------------------------
+   Mobile
+-------------------------------- */
+
+@media (max-width: 640px) {
+  .gd-container {
+    width: min(100% - 28px, 1280px);
+  }
+
+  .gd-section {
+    padding-block: 72px;
+  }
+}
