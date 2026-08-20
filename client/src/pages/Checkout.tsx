@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { createOrder } from '../services/orderService';
+import { createRazorpayPaymentOrder, verifyPaymentSignature } from '../services/paymentService';
 import type { CreateOrderPayload, CreateOrderPayloadItem, IDeliveryAddressSnapshot, OrderType } from '../types/order';
 import {
   Truck,
@@ -99,7 +100,6 @@ export const Checkout: React.FC = () => {
 
       // Trigger Razorpay Payment Workflow
       try {
-        const { createRazorpayPaymentOrder, verifyPaymentSignature } = await import('../services/paymentService');
         const paymentOrder = await createRazorpayPaymentOrder(newOrder._id || newOrder.id);
 
         const loaded = await new Promise<boolean>((resolve) => {

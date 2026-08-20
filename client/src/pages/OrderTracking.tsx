@@ -12,6 +12,7 @@ import {
   Flame,
 } from 'lucide-react';
 import { getStoredToken } from '../services/authService';
+import { buildApiUrl } from '../services/apiConfig';
 
 interface TimelineStep {
   type: string;
@@ -51,7 +52,7 @@ export default function OrderTracking() {
 
       try {
         const token = getStoredToken();
-        const response = await fetch(`/api/v1/orders/${encodeURIComponent(id)}/tracking`, {
+        const response = await fetch(buildApiUrl(`/api/v1/orders/${encodeURIComponent(id)}/tracking`), {
           headers: {
             'Content-Type': 'application/json',
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
