@@ -24,12 +24,19 @@ export function createApp(): express.Application {
 
   // Development vs Production CORS Configuration
   const rawClientUrls = config.clientUrl
-    ? config.clientUrl.split(',').map((u) => u.trim())
+    ? config.clientUrl.split(',').map((u) => u.trim().replace(/\/$/, ''))
     : [];
 
-  const allowedOrigins = config.isProduction
-    ? rawClientUrls
-    : [...rawClientUrls, 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000'];
+  const defaultAllowedOrigins = [
+    'https://gaya-darbar.vercel.app',
+    'https://gayadarbar.vercel.app',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:3000',
+    'http://localhost:5000',
+  ];
+
+  const allowedOriginsSet = new Set([...rawClientUrls, ...defaultAllowedOrigins]);
 
   app.use(
     cors({
@@ -39,14 +46,14 @@ export function createApp(): express.Application {
           return callback(null, true);
         }
         const cleanOrigin = origin.replace(/\/$/, '');
-        const isAllowed = allowedOrigins.some(
-          (allowed) => allowed.replace(/\/$/, '') === cleanOrigin
-        );
 
-        if (isAllowed || !config.isProduction) {
+        const isExactMatch = allowedOriginsSet.has(cleanOrigin);
+        const isVercelSubdomain = /^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/i.test(cleanOrigin);
+
+        if (isExactMatch || isVercelSubdomain) {
           callback(null, true);
         } else {
-          callback(new Error(`CORS policy violation: Origin '${origin}' is not allowed.`));
+          callback(null, false);
         }
       },
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -77,8 +84,24 @@ export function createApp(): express.Application {
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
 
-  // Health & Readiness Routes
+  // Root Service Status Endpoints (Render Ping & Health Probes)
+  app.get('/', (_req, res) => {
+    res.json({
+      success: true,
+      service: 'gaya-darbar-api',
+      status: 'online',
+      environment: config.nodeEnv,
+      message: 'Gaya Darbar API is running',
+    });
+  });
+
+  app.head('/', (_req, res) => {
+    res.status(200).end();
+  });
+
+  // Health & Readiness Routes (mounted on both /api and /api/v1)
   app.use('/api', healthRoutes);
+  app.use('/api/v1', healthRoutes);
 
   // v1 Gateway Router
   app.use('/api/v1', v1Routes);
