@@ -23,17 +23,27 @@ export function createApp(): express.Application {
   app.use(securityHeaders);
 
   // Development vs Production CORS Configuration
+  const rawClientUrls = config.clientUrl
+    ? config.clientUrl.split(',').map((u) => u.trim())
+    : [];
+
   const allowedOrigins = config.isProduction
-    ? [config.clientUrl]
-    : [config.clientUrl, 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000'];
+    ? rawClientUrls
+    : [...rawClientUrls, 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000'];
 
   app.use(
     cors({
       origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps, curl, or Postman) in dev/tests
-        if (!origin || allowedOrigins.includes(origin)) {
-          callback(null, true);
-        } else if (!config.isProduction) {
+        // Allow requests with no origin (like mobile apps, server-to-server, curl, or Postman)
+        if (!origin) {
+          return callback(null, true);
+        }
+        const cleanOrigin = origin.replace(/\/$/, '');
+        const isAllowed = allowedOrigins.some(
+          (allowed) => allowed.replace(/\/$/, '') === cleanOrigin
+        );
+
+        if (isAllowed || !config.isProduction) {
           callback(null, true);
         } else {
           callback(new Error(`CORS policy violation: Origin '${origin}' is not allowed.`));
